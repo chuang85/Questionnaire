@@ -1,17 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <% include ../partials/header.ejs %>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="author" content="HCK">
+  <title>体质类型测评问卷</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js" integrity="sha384-R4/ztc4ZlRqWjqIuvf6RX5yb/v90qNGx6fS48N0tRxiGkqveZETq72KgDVJCp2TC" crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+  <style type="text/css">
+  .center {
+    margin: auto;
+    width: 60%;
+    border: 3px solid #73AD21;
+    padding: 10px;
+  }
+  </style>
 </head>
-<body role="document" background="./img/background.jpg">
-      <!-- Main component -->
-      <div id="main" class="container-fluid center" role="main">
-        <div class="text-center">
-          <h1>体质类型测评问卷</h1>
-          <h3>请您根据近一年的体验和感觉，回答以下问题：</h3>
-        </div>
+
+<body role="document" background="../../img/background.jpg">
+  <!-- Main component -->
+  <div id="main" class="container-fluid center" role="main">
+    <div id="questionnaire">
+      <div class="text-center">
+        <h1>体质类型测评问卷</h1>
+        <h3>请您根据近一年的体验和感觉，回答以下问题：</h3>
       </div>
-    </div>   
+
+      <div id="questionnaire-content">
+      <!-- 题目 -->
+      </div>
+
+      <div id="submit-btn" class="text-center">
+        <button id="done-btn" type="button" class="btn btn-success">提交</button>
+      </div>
+    </div>
+
+    <div id="questionnaire-result" hidden>
+      <div id="questionnaire-result-content">
+      <!-- 结果 -->
+      </div>
+
+      <div id="reset-btn" class="text-center">
+        <button id="reset-btn" type="button" class="btn btn-danger">再做一次</button>
+      </div>
+    </div>
+  </div>
     
     <script type="text/javascript">
 
@@ -73,14 +118,14 @@
 
       var count = 1;
       for (var i = 0; i < questions.length; i++) {
-        $("#main").append('<p>' + count + '.' + questions[i] + '</p>')
+        $("#questionnaire-content").append('<p>' + count + '.' + questions[i] + '</p>')
           .append('<div id="question' + count + 'options"><div class="radio"><label><input type="radio" name="optionsRadios' + count + '" value="true">是</label></div><div class="radio"><label><input type="radio" name="optionsRadios' + count + '" value="false">否</label></div></div>');
         count ++;
       }
-
-      $("#main").append('<div class="text-center"><button id="done" type="button" class="btn btn-success">提交</button></div>');
       
-      $("#done").click(function() {
+      $("#done-btn").click(function() {
+        $("#questionnaire").hide();
+
         var results = [[],[],[],[],[],[],[],[]];
         for (var i = 0; i < results.length; i++) {
           for (var j = 0; j < 5; j++) {
@@ -95,13 +140,23 @@
           }
         }
 
+        var resultComponent = $("<div/>");
         if (typeResult.length == 0) {
-          alert(types[8]);
+          resultComponent.append($("<h2/>").text(types[8])).addClass("text-center");
         } else {
           for (var i = 0; i < typeResult.length; i++) {
-            alert(types[typeResult[i]]);
+            resultComponent.append($("<h2/>").text(types[typeResult[i]])).addClass("text-center");
           }
         }
+        $("#questionnaire-result-content").append(resultComponent);
+
+        $("#questionnaire-result").show();        
+      });
+  
+      $("#reset-btn").click(function() {
+        $("#questionnaire-result").hide();
+        $("#questionnaire-result-content").empty();
+        $("#questionnaire").show();
       });
 
       function getQuestionOptionWithNumber(n) {
