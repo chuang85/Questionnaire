@@ -9,22 +9,22 @@
   <title>体质类型测评问卷</title>
 
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https：//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https：//code.jquery.com/jquery-2.1.4.min.js" integrity="sha384-R4/ztc4ZlRqWjqIuvf6RX5yb/v90qNGx6fS48N0tRxiGkqveZETq72KgDVJCp2TC" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js" integrity="sha384-R4/ztc4ZlRqWjqIuvf6RX5yb/v90qNGx6fS48N0tRxiGkqveZETq72KgDVJCp2TC" crossorigin="anonymous"></script>
   <!-- Latest compiled and minified JavaScript -->
-  <script src="https：//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
   <style type="text/css">
   .center {
-    margin： auto;
-    width： 60%;
-    border： 3px solid #73AD21;
-    padding： 10px;
+    margin: auto;
+    width: 60%;
+    border: 3px solid #73AD21;
+    padding: 10px;
   }
   </style>
 </head>
@@ -48,9 +48,6 @@
     </div>
 
     <div id="questionnaire-result" hidden>
-      <div id="questionnaire-result-title">
-      <!-- 结果标题 -->
-      </div>
       <div id="questionnaire-result-content">
       <!-- 结果 -->
       </div>
@@ -220,7 +217,7 @@
       ]
       ];
 
-      var count = 1;
+      var count = 1; // determine the No. before each question and ids of radio button groups
       for (var i = 0; i < questions.length; i++) {
         $("#questionnaire-content").append('<p>' + count + '.' + questions[i] + '</p>')
           .append('<div id="question' + count + 'options"><div class="radio"><label><input type="radio" name="optionsRadios' + count + '" value="true">是</label></div><div class="radio"><label><input type="radio" name="optionsRadios' + count + '" value="false">否</label></div></div>');
@@ -228,15 +225,18 @@
       }
       
       $("#done-btn").click(function() {
+        // hide questions
         $("#questionnaire").hide();
 
-        var results = [[],[],[],[],[],[],[],[]];
+        // populate answers for all the questions
+        var results = [[],[],[],[],[],[],[],[]]; 
         for (var i = 0; i < results.length; i++) {
           for (var j = 0; j < 5; j++) {
             results[i][j] = getQuestionOptionWithNumber(i+1+j*results.length);
           }
         }
 
+        // compute according to formula
         var typeResult = [];
         for (var i = 0; i < results.length; i++) {
           if (getCountInArray(results[i]) >= 3) {
@@ -244,31 +244,37 @@
           }
         }
 
+        // render the page with computed results
+        // no answer set >= 3, then by default type A
         if (typeResult.length == 0) {
-          $("#questionnaire-result-title").append($("<h2/>").text(types[8])).addClass("text-center").append($("<div/>").html(details[0]));
+          var title = $("<h2/>").text(types[8]).addClass("text-center")
+          var content = $("<ul/>");
           for (var i = 0; i < details[8].length; i++) {
-            $("#questionnaire-result-content").append($("<ul/>").text(details[8][i]));
+            content.append($("<li/>").text(details[8][i]));
           }
+          $("#questionnaire-result-content").append(title).append(content);
         } else {
           for (var i = 0; i < typeResult.length; i++) {
-            $("#questionnaire-result-title").append($("<h2/>").text(types[typeResult[i]])).addClass("text-center");
+            var title = $("<h2/>").text(types[i]).addClass("text-center")
+            var content = $("<ul/>");
             for (var j = 0; j < details[i].length; j++) {
-              $("#questionnaire-result-content").append($("<ul/>").text(details[i][j]));
+              content.append($("<li/>").text(details[i][j]));
             }
+            $("#questionnaire-result-content").append(title).append(content);
           }
         }
-
         $("#questionnaire-result").show();        
       });
   
       $("#reset-btn").click(function() {
         $("#questionnaire-result").hide();
         $("#questionnaire-result-content").empty();
+        resetRadioButtons();
         $("#questionnaire").show();
       });
 
       function getQuestionOptionWithNumber(n) {
-        return $('input[name="optionsRadios' + n + '"]：checked').val();
+        return $('input[name="optionsRadios' + n + '"]:checked').val();
       }
 
       function getCountInArray(arr) {
@@ -279,6 +285,10 @@
           }
         }
         return count;
+      }
+
+      function resetRadioButtons() {
+        $('input').attr('checked',false);
       }
     });
     </script>
