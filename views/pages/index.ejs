@@ -255,10 +255,11 @@
           $("#questionnaire-result-content").append(title).append(content);
         } else {
           for (var i = 0; i < typeResult.length; i++) {
-            var title = $("<h2/>").text(types[i]).addClass("text-center")
+            var typeNumber = typeResult[i];
+            var title = $("<h2/>").text(types[typeNumber]).addClass("text-center")
             var content = $("<ul/>");
-            for (var j = 0; j < details[i].length; j++) {
-              content.append($("<li/>").text(details[i][j]));
+            for (var j = 0; j < details[typeNumber].length; j++) {
+              content.append($("<li/>").text(details[typeNumber][j]));
             }
             $("#questionnaire-result-content").append(title).append(content);
           }
